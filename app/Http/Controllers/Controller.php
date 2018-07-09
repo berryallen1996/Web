@@ -19,6 +19,7 @@ class Controller extends BaseController
 	protected $data= [];
 	protected $sizePerPage = 10;
 
+
 	function __construct(Request $request) {
 
 		$this->sizePerPage = $request->has('sizePerPage') ?  $request->get('sizePerPage') : 10;
