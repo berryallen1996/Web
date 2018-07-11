@@ -11,16 +11,13 @@
 	| is assigned the "api" middleware group. Enjoy building your API!
 	|
 	*/
-		// Route::post('login','Api\ApiController@login');
-
-	Route::group(['prefix' => 'api', 'namespace' => 'Api'],function($app){
-		Route::post('login','ApiController@login');
-		Route::post('signup','ApiController@signup');
-		Route::post('forgot_password','ApiController@forgot_password');
-		Route::post('logout','ApiController@logout');
-
-		Route::group(['middleware' => 'auth:api',],function($app){
-			
-
-		});
+	Route::post('register', 'Api\AuthController@register');
+	Route::post('login', 'Api\AuthController@login');
+	Route::post('recover', 'Api\AuthController@recover');
+	Route::post('verify', 'Api\AuthController@verifyUser');
+	Route::group(['middleware' => ['jwt.auth']], function() {
+	    Route::get('logout', 'Api\AuthController@logout');
+	    Route::get('test', function(){
+	        return response()->json(['foo'=>'bar']);
+	    });
 	});

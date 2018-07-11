@@ -12,12 +12,15 @@ return [
 	| you want to customize your views to better match your application.
 	|
 	*/
-	'reset_password'							=> 'Success! A password reset link has been sent to your work email address.',
+	'already_verfied'							=> 'Account already verified.',
+
+	'successful_verified'						=> 'You have successfully verified.',
 	'logout'									=> 'You have logged out successfully.',
-	'not_found_user' 							=> 'User not found.',
-	'user_block'								=> 'User is blocked.',
+	'failed_logout'								=> 'Failed to logout, please try again.',
+	'code_invalid' 								=> 'Verification code is invalid.',
+	'successful_signup'							=> 'Thanks for signing up! Please enter OTP to complete your registration.',
 	'successful_login'							=> 'Login successful.',
-	'failed_login'								=> 'Login failed.',
+	'failed_login'								=> 'Failed to login, please try again.',
 	'incorrect_email_password'					=> 'Oops, the email address and/or password is incorrect. Please try again',
 	'old_password_invalid'						=> 'Old password is incorrect, please try again.',
 	'password_changed_successfully'				=> 'Your password has been changed successfully.',
