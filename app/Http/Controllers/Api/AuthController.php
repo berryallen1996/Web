@@ -22,25 +22,36 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        $credentials = $request->only('name', 'email', 'password');
+        $credentials = $request->only('first_name','last_name','email', 'password','contact_no');
         
         $rules = [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users'
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users',
+            'contact_no' => 'required|min:8|max:16|unique:users',
+            'password' => 'required|min:8|max:16'
         ];
         $validator = Validator::make($credentials, $rules);
         if($validator->fails()) {
-        	$this->message  = $validator->messages();
+        	$this->message  = $validator->messages()->first();
             $this->status   = "false";
         }else{
-        	$name = $request->name;
-	        $email = $request->email;
-	        $password = $request->password;
+            $insert_data = [
+                'first_name'  => $request->first_name,
+                'last_name'  => $request->last_name,
+                'email' => $request->email,
+                'contact_no' => $request->contact_no,
+                'type' => 'user',
+                'password' => Hash::make($request->password)
+            ];
 	        
-	        $user = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make($password)]);
+	        $user = User::create($insert_data);
 	        $verification_code = $this->randomString(6); //Generate verification code
 	        DB::table('user_verifications')->insert(['user_id'=>$user->id,'token'=>$verification_code]);
 	        // OTP code
+            $this->data = $user;
+            $this->data['verification_code'] = $verification_code;
+
 	        $this->message    = 'messages.successful_signup';
         }
         
@@ -65,26 +76,58 @@ class AuthController extends Controller
         	$this->message  = $validator->messages();
             $this->status   = "false";
         }else{
-        	$verification_code = $request->verification_code;
-        	$check = DB::table('user_verifications')->where('token',$verification_code)->first();
-	        if(!is_null($check)){
-	            $user = User::find($check->user_id);
-	            if($user->is_verified == 1){
-	            	$this->message    = 'messages.already_verfied';
-	            }else{
-	            	$user->update(['is_verified' => 1]);
-		            DB::table('user_verifications')->where('token',$verification_code)->delete();
-		            $this->message    = 'messages.successful_verified';
-	            }
-	            
-	        }else{
-		        
-		        $this->message    = 'messages.code_invalid';
-		        $this->status   = "false";
-	        }
+
+            $existUser = User::where('email',$request->email)->first();
+
+            if($existUser){
+
+                $verification_code = $request->verification_code;
+                $check = DB::table('user_verifications')->where('token',$verification_code)->first();
+
+                if(!is_null($check)){
+
+                    $user = User::find($check->user_id);
+                    
+                    if($user->is_verified == 1){
+                        
+                        $this->message    = 'messages.already_verfied';
+                    }else{
+
+                        $user->update(['is_verified' => 1]);
+                        DB::table('user_verifications')->where('token',$verification_code)->delete();
+                        $this->data = $this->dologin($user->email);
+                        // $this->data['token'] = $token;
+                        $this->message    = 'messages.login_successfull';
+                    }
+                    
+                }else{
+                    
+                    $this->message    = 'messages.code_invalid';
+                    $this->status   = "false";
+                }
+            }else{
+                $this->message    = 'messages.email_invalid';
+                $this->status   = "false";
+            }
+        	
         }
 
         return $this->response();
+    }
+
+    /**
+     * Perform Login into the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $result (Data of users)
+     * @return \Illuminate\Http\Response
+     */
+    
+    private function dologin($email){
+
+        $user = User::where('email',$email)->first();  
+
+        return $user;
     }
 
     /**
@@ -112,13 +155,17 @@ class AuthController extends Controller
 	            // attempt to verify the credentials and create a token for the user
 	            if (! $token = JWTAuth::attempt($credentials)) {
 	            	$this->message    = 'messages.incorrect_email_password';
-	            }
+	            }else{
+                    $this->message    = 'messages.login_successfull';
+                    $this->data = $this->dologin($request->email);
+                    $this->data['token'] = $token;
+                }
 	        } catch (JWTException $e) {
 	        	$this->status   = "false";
-	        	$this->message    = 'messages.failed_login';
-	        	return $this->response();
-	        }
-	        $this->data['token'] = $token;
+                $this->message    = 'messages.failed_login';
+                return $this->response();
+            }
+	        
 		}
         return $this->response();
     }

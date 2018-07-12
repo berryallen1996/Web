@@ -16,8 +16,10 @@ return [
 
 	'successful_verified'						=> 'You have successfully verified.',
 	'logout'									=> 'You have logged out successfully.',
+	'login_successfull'							=> 'You have successfully logged in.',
 	'failed_logout'								=> 'Failed to logout, please try again.',
 	'code_invalid' 								=> 'Verification code is invalid.',
+	'email_invalid' 							=> 'Email does not exist.',
 	'successful_signup'							=> 'Thanks for signing up! Please enter OTP to complete your registration.',
 	'successful_login'							=> 'Login successful.',
 	'failed_login'								=> 'Failed to login, please try again.',
