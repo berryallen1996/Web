@@ -1,0 +1,154 @@
+/*
+    Theme Name: UMA
+    Theme URL: 
+    Author: Singsys
+    Author URL: www.singsys.com
+    Description: 
+
+    Â© 2017 UMA. All Rights Reserved.
+*/
+
+
+/* default selection color */
+*::-moz-selection                               { background-color: rgba(251,210,11,0.85);  color: #FFF;}
+*::-webkit-selection                            { background-color: rgba(251,210,11,0.85);  color: #FFF;}
+*::-moz-selection                               { background-color: rgba(251,210,11,0.85);  color: #FFF;}
+*::-webkit-selection                            { background-color: rgba(251,210,11,0.85);  color: #FFF; }
+*::selection                                    { background-color: rgba(251,210,11,0.85);  color: #FFF; }
+
+
+/* default placeholder color */
+.form-control::-webkit-input-placeholder        { color: #9b9b9b; font-style: italic;}
+.form-control:-moz-placeholder                  { color: #9b9b9b; font-style: italic;}
+.form-control::-webkit-placeholder              { color: #9b9b9b; font-style: italic;}
+.form-control::-moz-placeholder                 { color: #9b9b9b; font-style: italic;}
+.form-control:-ms-input-placeholder             { color: #9b9b9b; font-style: italic;}
+
+
+/* default font-family for site */
+
+html, body, div, span, applet, object, iframe, 
+p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video, input, select, textarea, button {font-family: 'Roboto', sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-family: 'Roboto', sans-serif; }
+
+.poweredby {
+    position: fixed;
+    right: -50%;
+    top: 50%;
+    font-size: 0;
+    z-index: -9;
+}
+body{
+  background: transparent;
+}
+/*privacy policy*/
+.privacy--text p,.about--text p{
+      font-size: 14px; 
+      color: #000;
+      font-weight: 400;
+      line-height:24px;
+      margin:0;
+      padding-bottom: 30px;
+     
+      font-family: Roboto;
+    }
+
+ /*terms of use*/
+.termsOfUse--text{
+      font-size: 14px; 
+      color: #000;
+      font-weight: 400;
+      line-height:24px;
+     
+      font-family: Roboto;
+    }
+
+.termsOfUse--text p {
+      margin:0 10px;
+      padding-bottom: 30px;
+    }
+  .about--text h3 {
+    font-size: 17px;
+    font-weight: 400;
+    color: #2883dd;
+    margin: 0;
+    line-height: 22px;
+    padding-bottom: 15px;
+}
+.banner-sec{
+     width:100%;
+}
+.banner-sec img{
+     max-width:100%;
+}
+.about--text,
+.termsOfUse--text,
+.privacy--text{
+    padding: 25px 25px;
+}
+
+ /*faq page*/
+
+.ques-style h4 {
+    font-size: 14px;
+    color: #000;
+    font-weight: 500;
+    position: relative;
+    margin: 0;
+    padding: 0px 0 15px 0;
+   
+}
+.ques-style a{
+  text-decoration: none;
+}
+.ans-style {
+    font-size: 14px;
+    color: #000;
+    font-weight: 400;
+    position: relative;
+    font-style: normal;
+    font-family: Roboto;
+}
+.ques-style h4:before {
+    position: absolute;
+    content: "";
+    background-image: url(../images/ques-icon.png);
+    height: 18px;
+    width: 16px;
+    left: -30px;
+    top: 0;
+}
+.ans-style:before {
+    position: absolute;
+    content: "";
+    background-image: url(../images/ans-icon.png);
+    height: 18px;
+    width: 16px;
+    left: -30px;
+    top: 0;
+}
+.panel-group {
+    margin: 25px;
+    margin-top: 0;
+}
+.faq-style{
+    padding-left: 30px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-bottom: 2px solid #ddd;
+    border-radius: 0 !important;
+    padding-top: 15px;
+    padding-bottom: 10px;
+}

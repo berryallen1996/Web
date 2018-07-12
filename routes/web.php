@@ -14,3 +14,14 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('administrator/login','Admin\AdminController@login');
+Route::post('/administrator/login','Admin\AdminController@authenticate');
+
+Route::group(['prefix'=> 'admin','namespace' => 'Admin'], function () {
+	Route::get('/dashboard','AdminController@dashboard');
+	Route::get('/logout', function () {
+        \Auth::logout();
+		return redirect('/administrator/login');
+	});
+});
