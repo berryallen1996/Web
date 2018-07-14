@@ -19,6 +19,9 @@ Route::get('administrator/login','Admin\AdminController@login');
 Route::post('/administrator/login','Admin\AdminController@authenticate');
 
 Route::group(['prefix'=> 'admin','namespace' => 'Admin'], function () {
+
+	Route::resource('quantity','Admin\QuantityController');
+	
 	Route::get('/dashboard','AdminController@dashboard');
 	Route::get('/logout', function () {
         \Auth::logout();
