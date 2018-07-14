@@ -7,13 +7,15 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Mail;
+
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     protected $message = '';
-	protected $status= "true";
+	protected $status= "false";
 	protected $error_code ='';
 	protected $errors =[];
 	protected $data= [];
@@ -47,12 +49,12 @@ class Controller extends BaseController
 	function mailSender($email, $subject, $data, $template, $type = 'send') {
 		if($type == 'send'){
 			return Mail::send($template, $data, function ($message) use($email, $subject, $data){
-		        $message->from('donotreply@dishdash.co', $data['site_name']);
+		        $message->from('donotreply@test.com', $data['site_name']);
 		        $message->to($email)->subject($subject);
 		    });
 		}else{
 			return Mail::queue($template, $data, function ($message) use($email, $subject, $data){
-		        $message->from('donotreply@dishdash.co', $data['site_name']);
+		        $message->from('donotreply@test.com', $data['site_name']);
 		        $message->to($email)->subject($subject);
 		    });
 		}
@@ -73,7 +75,7 @@ class Controller extends BaseController
 	    return array(
 	        'site_name'         => env('PROJ_NAME'),
 	        'slogan'            => env('PROJ_NAME'),
-	        'site_link'         => env('ASSET_URL'),
+	        'site_link'         => env('APP_URL'),
 	        'help_email'        => env('MAIL_USERNAME'),
 	    );
 	}

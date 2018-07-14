@@ -25,3 +25,8 @@ Route::group(['prefix'=> 'admin','namespace' => 'Admin'], function () {
 		return redirect('/administrator/login');
 	});
 });
+
+
+#This is use for forgot password in WEB API
+Route::get('reset_password/{token}', 'Api\AuthController@resetPassword');
+Route::post('reset_password/{token}', 'Api\AuthController@updatePassword');

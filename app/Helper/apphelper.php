@@ -1,6 +1,8 @@
 <?php
 
     use Illuminate\Support\Facades\Mail;
+    use Twilio\Rest\Client;
+
     /* For getting the country data from table */
     function getCountries(){
         $company = DB::table('countries')
@@ -136,5 +138,30 @@
             }
         }
     }
+
+    function __sendOTP($number,$data){
+       //Your Account SID and Auth Token from twilio.com/console
+       $sid   = env('TWILIO_ACCOUNT_SID'); // Your Account SID from www.twilio.com/console
+       $token = env('TWILIO_AUTH_TOKEN'); // Your Auth Token from www.twilio.com/console
+
+       $client = new Client($sid, $token);
+       // Use the client to do fun stuff like send text messages!
+       try{
+           $response = $client->messages->create(
+               // the number you'd like to send the message to
+               '+91'.$number,
+               array(
+                   // A Twilio phone number you purchased at twilio.com/console
+                   'from' => env('TWILIO_NUMBER'),
+                   // the body of the text message you'd like to send
+                   'body' => 'Your OTP is : '.$data
+               )
+           );
+           return true;
+       }
+       catch(Exception $e){
+           return false;   
+       }
+   }
 
 ?>
