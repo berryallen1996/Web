@@ -139,6 +139,33 @@
         }
     }
 
+
+    function ___url($url = "",$folder = "",$echo = true) {
+        if($folder == 'backend'){
+            
+                $url = "admin/$url";
+           
+        }
+
+        if(preg_match( '/^(http|https):\\/\\/[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}'.'((:[0-9]{1,5})?\\/.*)?$/i' ,$url)){
+            if($echo == true){
+                echo $url;
+            }else{
+                return $url;
+            }
+        }else{
+            if($echo == true){
+                echo URL::to($url);
+            }else{
+                if($url === '/administrator/#'){
+                    return 'javascript:void(0);';
+                }else{
+                    return URL::to($url);
+                }
+            }
+        }
+    }
+
     function __sendOTP($number,$data){
        //Your Account SID and Auth Token from twilio.com/console
        $sid   = env('TWILIO_ACCOUNT_SID'); // Your Account SID from www.twilio.com/console
