@@ -21,6 +21,7 @@ return [
 	'email_invalid' 							=> 'Email does not exist.',
 	'successful_signup'							=> 'Thanks for signing up! Please enter OTP to complete your registration.',
 	'successful_login'							=> 'Login successful.',
+	'successful_resend'							=> 'OTP resend successfully.',
 	'failed_login'								=> 'Failed to login, please try again.',
 	'incorrect_email_password'					=> 'Oops, the email address and/or password is incorrect. Please try again',
 	'reset_email_password'					=> 'A reset email has been sent! Please check your email.',
