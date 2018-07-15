@@ -28,6 +28,8 @@ Route::group(['middleware' => '\App\Http\Middleware\AdminAuth'], function () {
 
 			Route::resource('locality','LocalityController');
 
+			Route::resource('static','StaticContentController');
+
 			Route::get('dashboard','AdminController@dashboard');
 			Route::get('logout', function () {
 		        \Auth::logout();
