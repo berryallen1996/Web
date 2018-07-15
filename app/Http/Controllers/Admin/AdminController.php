@@ -13,7 +13,7 @@ class AdminController extends Controller
 	public function login(){
 		$data['page_title'] = $data['title'] = 'Login';
 		if(Auth::check()){
-			return redirect('administrator/dashboard');
+			return redirect('admin/dashboard');
 		}
 		return view('backend.login')->with($data);
 	}

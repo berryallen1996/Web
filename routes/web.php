@@ -20,18 +20,21 @@ Route::post('/administrator/login','Admin\AdminController@authenticate');
 Route::get('get-state-list','Admin\AdminController@getStateList');
 Route::get('get-city-list','Admin\AdminController@getCityList');
 
-Route::group(['prefix'=> 'admin','namespace' => 'Admin'], function () {
 
-	Route::resource('quantity','QuantityController');
+Route::group(['middleware' => '\App\Http\Middleware\AdminAuth'], function () {
+		Route::group(['prefix'=> 'admin','namespace' => 'Admin'], function () {
 
-	Route::resource('locality','LocalityController');
+			Route::resource('quantity','QuantityController');
 
-	Route::get('/dashboard','AdminController@dashboard');
-	Route::get('/logout', function () {
-        \Auth::logout();
-		return redirect('/administrator/login');
+			Route::resource('locality','LocalityController');
+
+			Route::get('dashboard','AdminController@dashboard');
+			Route::get('logout', function () {
+		        \Auth::logout();
+				return redirect('/administrator/login');
+			});
+		});
 	});
-});
 
 
 #This is use for forgot password in WEB API
