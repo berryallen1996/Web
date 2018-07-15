@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\User;
 use App\PasswordReset;
 use App\UserAddress;
+use App\Restaurant;
+use App\Dish;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Validator, DB, Hash, Mail;
@@ -75,8 +77,9 @@ class AuthController extends Controller
             if($existUser){
                 $verification_code = $this->randomString(6);
                 DB::table('user_verifications')->where('user_id',$existUser->id)->delete();
-                DB::table('user_verifications')->insert(['user_id'=>$user->id,'token'=>$verification_code]);
+                DB::table('user_verifications')->insert(['user_id'=>$existUser->id,'token'=>$verification_code]);
                 // OTP code
+                $this->data = $existUser;
                 $this->data['verification_code'] = $verification_code;
                 $this->status   = "true";
                 $this->message    = 'messages.successful_resend';
@@ -96,10 +99,11 @@ class AuthController extends Controller
      */
     public function verifyUser(Request $request)
     {
-    	$credentials = $request->only('verification_code');
+    	$credentials = $request->only('verification_code','email');
         
         $rules = [
-            'verification_code' => 'required'
+            'verification_code' => 'required',
+            'email' => 'required|email'
         ];
         $validator = Validator::make($credentials, $rules);
         if($validator->fails()) {
@@ -111,7 +115,10 @@ class AuthController extends Controller
             if($existUser){
 
                 $verification_code = $request->verification_code;
-                $check = DB::table('user_verifications')->where('token',$verification_code)->first();
+                $check = DB::table('user_verifications')
+                        ->where('token',$verification_code)
+                        ->where('user_id',$existUser->id)
+                        ->first();
 
                 if(!is_null($check)){
 
@@ -123,7 +130,12 @@ class AuthController extends Controller
                     }else{
 
                         $user->update(['is_verified' => 1]);
-                        DB::table('user_verifications')->where('token',$verification_code)->delete();
+                        
+                        DB::table('user_verifications')
+                        ->where('token',$verification_code)
+                        ->where('user_id',$check->user_id)
+                        ->delete();
+
                         $token = JWTAuth::fromUser($user);
                         $this->data = $this->dologin($user->email);
                         $this->data['token'] = $token;
@@ -223,10 +235,15 @@ class AuthController extends Controller
             $email_data['token'] = $token;
             $email_data['name']  = ucfirst($user->first_name);
 
+            try{
+                $isMailSent = $this->mailSender($request->email,$subject,$email_data,'email.reset_password');
+                $this->status   = "true";
+                $this->message  = 'messages.reset_email_password';
+
+            }catch(\Expection $e){
+                $this->message    = 'messages.email_sending_failed';
+            }
             
-            $isMailSent = $this->mailSender($request->email,$subject,$email_data,'email.reset_password');
-            $this->status   = "true";
-            $this->message  = 'messages.reset_email_password';
 
         }
         return $this->response();
@@ -318,37 +335,27 @@ class AuthController extends Controller
         else{
 
             $data = [];
-            $country_id = isset($request->country_id) ? $request->country_id : '';
-            $state_id = isset($request->state_id) ? $request->state_id : '';
-            $city_id = isset($request->city_id) ? $request->city_id : '';
+            $country_id = isset($request->country_id) ? $request->country_id : null;
+            $state_id = isset($request->state_id) ? $request->state_id : null;
+            $city_id = isset($request->city_id) ? $request->city_id : null;
+            $locality_id = isset($request->locality_id) ? $request->locality_id : null;
 
             if($request->type == 'country'){
                 $data = DB::table('country')->select('id_country as id', 'country_name as name')->get();
             }elseif($request->type == 'state'){
-                if($country_id != ""){
-                    $data = DB::table('states')->select('id', 'states as name')->where('country_id',$country_id)
-                        ->get();
-                }else{
-                    $data = DB::table('states')->select('id', 'states as name')->get();
-                }
+                $data = DB::table('states')->select('id', 'states as name')
+                    ->where('country_id',$country_id)
+                    ->get();
+                
             }elseif($request->type == 'city'){
-                if($state_id != ""){
-                    $data = DB::table('city')->select('id', 'name')
+                $data = DB::table('city')->select('id', 'name')
                     ->where('state_id',$state_id)
                     ->get();
-                }else{
-                    $data = DB::table('city')->select('id', 'name')
-                    ->get();
-                }
+                
             }elseif($request->type == 'locality'){
-                if($state_id != ""){
-                    $data = DB::table('locality')->select('id', 'name')
+                $data = DB::table('locality')->select('id', 'name')
                     ->where('city_id',$city_id)
                     ->get();
-                }else{
-                    $data = DB::table('locality')->select('id', 'name')
-                    ->get();
-                }
             }
 
             $this->data = $data;
@@ -367,7 +374,6 @@ class AuthController extends Controller
      */
     public function addAddress(Request $request)
     {
-        // dd($request->all());
         $credentials = $request->only('token','address','contact_no','state_id','city_id','locality_id','pincode');
         $rules = [
             'token' => 'required',
@@ -398,7 +404,7 @@ class AuthController extends Controller
                 ];
                 
                 $userAddress = UserAddress::create($insert_data);
-                $this->data = $userAddress;
+                // $this->data = $userAddress;
                 $this->status   = "true";
                 $this->message  = 'messages.address_saved';
             }else{
@@ -499,6 +505,91 @@ class AuthController extends Controller
             $this->status   = "false";
 	        $this->message    = 'messages.failed_logout';
         }
+        return $this->response();
+    }
+
+    /**
+     * Restaurant List
+     * 
+     *
+     * @param Request $request
+     */
+    public function restaurant(Request $request) {
+        
+        $state_id = isset($request->state_id) ? $request->state_id : null;
+        $city_id = isset($request->city_id) ? $request->city_id : null;
+        $locality_id = isset($request->locality_id) ? $request->locality_id : null;
+        $pincode = isset($request->pincode) ? $request->pincode : null;
+        $address = isset($request->address) ? $request->address : null;
+        
+        $data = Restaurant::leftjoin('country','country.id_country', '=', 'restaurant.country_id')
+                        ->leftjoin('states','states.id', '=', 'restaurant.state_id')
+                        ->leftjoin('city','city.id', '=', 'restaurant.city_id')
+                        ->leftjoin('locality','locality.id', '=', 'restaurant.locality_id')
+                        ->select('restaurant.id',
+                                'restaurant.name',
+                                'restaurant.address',
+                                'restaurant.contact_no',
+                                'country.country_name',
+                                'states.states as state_name',
+                                'city.name as city_name',
+                                'locality.name as locality_name',
+                                'restaurant.pincode',
+                                DB::raw("ifnull(restaurant.image,'') as image"))
+                        ->where('state_id',$state_id)
+                        ->where('city_id',$city_id)
+                        ->where('locality_id',$locality_id)
+                        ->where('pincode',$pincode)
+                        ->where('address',$address)
+                        ->get();
+        $this->data = $data;
+        $this->status   = "true";
+        $this->message  = 'messages.data_get';
+        return $this->response();
+    }
+
+
+    /**
+     * Restaurant List
+     * 
+     *
+     * @param Request $request
+     */
+    public function dishes(Request $request) {
+        $credentials = $request->only('restaurant_id');
+        $rules = [
+            'restaurant_id' => 'required'
+        ];
+        $validator = Validator::make($credentials, $rules);
+        if($validator->fails()) {
+            $this->message    = $validator->messages()->first();
+        }
+        else{
+
+        }
+        $restaurant_id = isset($request->restaurant_id) ? $request->restaurant_id : null;
+        $name = isset($request->name) ? $request->name : null;
+        $category = isset($request->category) ? $request->category : null;
+        
+        $data = Dish::join('dish_restaurant','dish_restaurant.dish_id', '=', 'dishes.id')
+                        ->join('restaurant','restaurant.id', '=', 'dish_restaurant.restaurant_id')
+                        ->leftjoin('dishes_category','dishes_category.id', '=', 'dishes.category_id')
+                        ->leftjoin('dish_quantity','dish_quantity.dish_id', '=', 'dishes.id')
+                        ->leftjoin('dishes_quantity','dishes_quantity.id', '=', 'dish_quantity.quantity_id')
+                        ->select('dishes.id',
+                                'dishes.name as dish_name',
+                                'dishes.price as dish_price',
+                                'dishes_category.name as dishes_category_name',
+                                DB::raw("ifnull(dishes.image,'') as image"))
+                        // ->where('dishes.name',$name)
+                        ->where('restaurant.id',$restaurant_id)
+                        ->groupBy('dishes.id')
+                        ->with('dishQuantity')
+                        // ->where('dishes.category_id',$category)
+                        ->get();
+        $this->data = $data;
+        $this->status   = "true";
+        $this->message  = 'messages.data_get';
         return $this->response();
     }
 
