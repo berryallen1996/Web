@@ -26,6 +26,8 @@ Route::group(['middleware' => '\App\Http\Middleware\AdminAuth'], function () {
 
 			Route::resource('quantity','QuantityController');
 
+			Route::resource('category','DishCategoryController');
+
 			Route::resource('locality','LocalityController');
 
 			Route::resource('static','StaticContentController');
