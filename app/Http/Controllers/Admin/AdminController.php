@@ -67,4 +67,22 @@ class AdminController extends Controller
   
 		return view('backend.page.dashboard')->with($data);
 	}
+
+
+	public function getStateList(Request $request)
+    {
+        $states = \DB::table("states")
+                    ->where("country_id",$request->country_id)
+                    ->pluck("states as name","id");
+        return response()->json($states);
+    }
+
+
+    public function getCityList(Request $request)
+    {
+        $cities = \DB::table("city")
+                    ->where("state_id",$request->state_id)
+                    ->pluck("name","id");
+        return response()->json($cities);
+    }
 }
