@@ -24,7 +24,7 @@ return [
 	'successful_resend'							=> 'OTP resend successfully.',
 	'failed_login'								=> 'Failed to login, please try again.',
 	'incorrect_email_password'					=> 'Oops, the email address and/or password is incorrect. Please try again',
-	'reset_email_password'					=> 'A reset email has been sent! Please check your email.',
+	'reset_email_password'						=> 'A reset email has been sent! Please check your email.',
 	'old_password_invalid'						=> 'Old password is incorrect, please try again.',
 	'password_changed_successfully'				=> 'Your password has been changed successfully.',
 	'password_changed_failed'					=> 'Invalid request, please try again.',

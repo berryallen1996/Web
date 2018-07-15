@@ -21,7 +21,7 @@
                         <div class="panel-body">
                             <div class="form-group @if ($errors->has('country'))has-error @endif">
                                 <label for="title">Select Country:</label>
-                                {!! Form::select('country', $countries,'',array('class'=>'form-control','id'=>'country','style'=>'width:350px;'));!!}
+                                {!! Form::select('country', $countries,$locality->id_country,array('class'=>'form-control','id'=>'country','style'=>'width:350px;'));!!}
                                 @if ($errors->first('country'))
                                     <span class="help-block">
                                         {{ $errors->first('country')}}
