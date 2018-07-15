@@ -10,9 +10,9 @@ class Dish extends Model
 
     public function dishQuantity()
     {
-        return $this->hasMany('App\DishQuantity', 'dish_id')
-        ->join('dishes_quantity', 'dishes_quantity.id', '=', 'dish_quantity.quantity_id')
-        ->select('dishes_quantity.name as quantity_name'
-        		,'dish_quantity.price');
+        return $this->hasMany('App\DishQuantity', 'dish_id');
+        // ->join('dishes_quantity', 'dishes_quantity.id', '=', 'dish_quantity.quantity_id')
+        // ->select('dishes_quantity.name as quantity_name'
+        // 		,'dish_quantity.price');
     }
 }

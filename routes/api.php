@@ -19,6 +19,7 @@
 	Route::post('resend_otp', 'Api\AuthController@resend_otp');
 	Route::post('restaurant', 'Api\AuthController@restaurant');
 	Route::post('dishes', 'Api\AuthController@dishes');
+	Route::post('static', 'Api\AuthController@staticContent');
 
 	Route::post('send', 'Api\AuthController@send');
 	Route::group(['middleware' => 'jwt.auth'], function () {

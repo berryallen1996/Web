@@ -516,13 +516,13 @@ class AuthController extends Controller
      */
     public function restaurant(Request $request) {
         
-        $state_id = isset($request->state_id) ? $request->state_id : null;
-        $city_id = isset($request->city_id) ? $request->city_id : null;
-        $locality_id = isset($request->locality_id) ? $request->locality_id : null;
-        $pincode = isset($request->pincode) ? $request->pincode : null;
-        $address = isset($request->address) ? $request->address : null;
+        $state_id = isset($request->state_id) ? $request->state_id : '';
+        $city_id = isset($request->city_id) ? $request->city_id : '';
+        $locality_id = isset($request->locality_id) ? $request->locality_id : '';
+        $pincode = isset($request->pincode) ? $request->pincode : '';
+        $address = isset($request->address) ? $request->address : '';
         
-        $data = Restaurant::leftjoin('country','country.id_country', '=', 'restaurant.country_id')
+        $builder = Restaurant::leftjoin('country','country.id_country', '=', 'restaurant.country_id')
                         ->leftjoin('states','states.id', '=', 'restaurant.state_id')
                         ->leftjoin('city','city.id', '=', 'restaurant.city_id')
                         ->leftjoin('locality','locality.id', '=', 'restaurant.locality_id')
@@ -535,13 +535,24 @@ class AuthController extends Controller
                                 'city.name as city_name',
                                 'locality.name as locality_name',
                                 'restaurant.pincode',
-                                DB::raw("ifnull(restaurant.image,'') as image"))
-                        ->where('restaurant.state_id',$state_id)
-                        ->where('restaurant.city_id',$city_id)
-                        ->where('restaurant.locality_id',$locality_id)
-                        ->where('restaurant.pincode',$pincode)
-                        // ->where('address',$address)
-                        ->get();
+                                DB::raw("ifnull(restaurant.image,'') as image"));
+        if($state_id != ''){
+            $builder = $builder->where('restaurant.state_id',$state_id);
+        }
+        if($city_id != ''){
+            $builder = $builder->where('restaurant.city_id',$city_id);
+        }
+        if($locality_id != ''){
+            $builder = $builder->where('restaurant.locality_id',$locality_id);
+        }
+        if($pincode != ''){
+            $builder = $builder->where('restaurant.pincode',$pincode);
+        }
+        if($address != ''){
+            $builder = $builder->where('address', 'like', '%' . $address . '%');
+        }
+
+        $data = $builder->paginate(10);
         $this->data = $data;
         $this->status   = "true";
         $this->message  = 'messages.data_get';
@@ -567,29 +578,58 @@ class AuthController extends Controller
         else{
 
         }
-        $restaurant_id = isset($request->restaurant_id) ? $request->restaurant_id : null;
-        $name = isset($request->name) ? $request->name : null;
-        $category = isset($request->category) ? $request->category : null;
+        $restaurant_id = isset($request->restaurant_id) ? $request->restaurant_id : '';
+        $name = isset($request->name) ? $request->name : '';
+        $category_id = isset($request->category_id) ? $request->category_id : '';
         
-        $data = Dish::join('dish_restaurant','dish_restaurant.dish_id', '=', 'dishes.id')
+        $builder = Dish::join('dish_restaurant','dish_restaurant.dish_id', '=', 'dishes.id')
                         ->join('restaurant','restaurant.id', '=', 'dish_restaurant.restaurant_id')
                         ->leftjoin('dishes_category','dishes_category.id', '=', 'dishes.category_id')
-                        ->leftjoin('dish_quantity','dish_quantity.dish_id', '=', 'dishes.id')
-                        ->leftjoin('dishes_quantity','dishes_quantity.id', '=', 'dish_quantity.quantity_id')
                         ->select('dishes.id',
                                 'dishes.name as dish_name',
                                 'dishes.price as dish_price',
                                 'dishes_category.name as dishes_category_name',
                                 DB::raw("ifnull(dishes.image,'') as image"))
-                        // ->where('dishes.name',$name)
                         ->where('restaurant.id',$restaurant_id)
-                        ->groupBy('dishes.id')
-                        ->with('dishQuantity')
-                        // ->where('dishes.category_id',$category)
-                        ->get();
+                        ->with('dishQuantity');
+                        
+        if($name != ''){
+            $builder = $builder->where('dishes.name','like', '%' . $name . '%');
+        }
+        if($category_id != ''){
+            $builder = $builder->where('dishes.category_id',$category_id);
+        }
+        
+
+        $data = $builder->paginate(10);
         $this->data = $data;
         $this->status   = "true";
         $this->message  = 'messages.data_get';
+        return $this->response();
+    }
+
+    /**
+     * Static content
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function staticContent(Request $request)
+    {
+        $credentials = $request->only('type');
+        $rules = [
+            'type' => 'required|in:about,terms,privacy',
+        ];
+        $validator = Validator::make($credentials, $rules);
+        if($validator->fails()) {
+            $this->message    = $validator->messages()->first();
+        }
+        else{
+            $data = DB::table('static_contents')->select('alias as type', 'title','description')->where('alias',$request->type)->first();
+            $this->data = $data;
+            $this->status   = "true";
+            $this->message  = 'messages.data_get';
+        }
         return $this->response();
     }
 
