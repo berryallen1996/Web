@@ -26,7 +26,7 @@
         /* MENU */
 
     function ___get_category_list(&$categoryList,$parent_category = 0){
-        $id_admin = Auth::guard('web')->user()->id;
+        $id_admin = Auth::user()->id;
         static $index = 0;$page = "";
 
         $admin_menus = \App\Models\AdminModel::get_menu_visibility($id_admin);

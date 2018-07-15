@@ -17,8 +17,15 @@ Route::get('/', function () {
 
 Route::get('administrator/login','Admin\AdminController@login');
 Route::post('/administrator/login','Admin\AdminController@authenticate');
+Route::get('get-state-list','Admin\AdminController@getStateList');
+Route::get('get-city-list','Admin\AdminController@getCityList');
 
 Route::group(['prefix'=> 'admin','namespace' => 'Admin'], function () {
+
+	Route::resource('quantity','QuantityController');
+
+	Route::resource('locality','LocalityController');
+
 	Route::get('/dashboard','AdminController@dashboard');
 	Route::get('/logout', function () {
         \Auth::logout();
