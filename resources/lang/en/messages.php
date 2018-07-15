@@ -30,5 +30,6 @@ return [
 	'password_changed_failed'					=> 'Invalid request, please try again.',
 	'data_get'									=> 'Data found.',
 	'address_saved'								=> 'Address saved successfully.',
+	'email_sending_failed'						=> 'Email sending failed.',
 
 ];
