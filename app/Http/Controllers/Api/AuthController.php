@@ -59,6 +59,35 @@ class AuthController extends Controller
         return $this->response();
     }
 
+    public function resend_otp(Request $request)
+    {
+        $credentials = $request->only('email');
+        
+        $rules = [
+            'email' => 'required|email'
+        ];
+        $validator = Validator::make($credentials, $rules);
+        if($validator->fails()) {
+            $this->message  = $validator->messages()->first();
+        }else{
+            $existUser = User::where('email',$request->email)->first();
+
+            if($existUser){
+                $verification_code = $this->randomString(6);
+                DB::table('user_verifications')->where('user_id',$existUser->id)->delete();
+                DB::table('user_verifications')->insert(['user_id'=>$user->id,'token'=>$verification_code]);
+                // OTP code
+                $this->data['verification_code'] = $verification_code;
+                $this->status   = "true";
+                $this->message    = 'messages.successful_resend';
+            }else{
+                $this->message    = 'messages.email_invalid';
+            }
+        }
+        
+        return $this->response();
+    }
+
     /**
      * API Verify User
      *
@@ -74,7 +103,7 @@ class AuthController extends Controller
         ];
         $validator = Validator::make($credentials, $rules);
         if($validator->fails()) {
-        	$this->message  = $validator->messages();
+        	$this->message  = $validator->messages()->first();
         }else{
 
             $existUser = User::where('email',$request->email)->first();
@@ -126,7 +155,6 @@ class AuthController extends Controller
     private function dologin($email){
 
         $user = User::where('email',$email)->first();  
-
         return $user;
     }
 
@@ -146,7 +174,7 @@ class AuthController extends Controller
         ];
         $validator = Validator::make($credentials, $rules);
         if($validator->fails()) {
-        	$this->message    = $validator->messages();
+        	$this->message    = $validator->messages()->first();
         }
         else{
         	$credentials['is_verified'] = 1;
@@ -285,7 +313,7 @@ class AuthController extends Controller
         ];
         $validator = Validator::make($credentials, $rules);
         if($validator->fails()) {
-            $this->message    = $validator->messages();
+            $this->message    = $validator->messages()->first();
         }
         else{
 
@@ -339,36 +367,38 @@ class AuthController extends Controller
      */
     public function addAddress(Request $request)
     {
-        dd($request->all());
-        $credentials = $request->only('token','address','contact_no','state_id','city_id','locality_id');
+        // dd($request->all());
+        $credentials = $request->only('token','address','contact_no','state_id','city_id','locality_id','pincode');
         $rules = [
             'token' => 'required',
             'address' => 'required',
             'contact_no' => 'required',
             'state_id' => 'required',
             'city_id' => 'required',
-            'locality_id' => 'required'
+            'locality_id' => 'required',
+            'pincode' => 'required'
         ];
         $validator = Validator::make($credentials, $rules);
         if($validator->fails()) {
-            $this->message    = $validator->messages();
+            $this->message    = $validator->messages()->first();
         }
         else{
-            $user = $this->getAuthUser($request->token);   
+            $user = $this->getAuthUser($request->token);  
             if($user){
                 $insert_data = [
-                    'user_id'  => $user['id'],
+                    'user_id'  => $user->id,
                     'address'  => $request->address,
                     'contact_no'  => $request->contact_no,
                     'country_id'  => '101',
                     'state_id'  => $request->state_id,
                     'city_id' => $request->city_id,
                     'contact_no' => $request->contact_no,
-                    'locality_id' => $request->locality_id
+                    'locality_id' => $request->locality_id,
+                    'pincode' => $request->pincode
                 ];
                 
                 $userAddress = UserAddress::create($insert_data);
-                $this->data = $user;
+                $this->data = $userAddress;
                 $this->status   = "true";
                 $this->message  = 'messages.address_saved';
             }else{
@@ -392,17 +422,58 @@ class AuthController extends Controller
         ];
         $validator = Validator::make($credentials, $rules);
         if($validator->fails()) {
-            $this->message    = $validator->messages();
+            $this->message    = $validator->messages()->first();
         }
         else{
             $user = $this->getAuthUser($request->token);   
             if($user){
-
-                $user_id = $user['id'];
-                $userAddress = UserAddress::where('user_id',$user_id)->get();  
+                $userAddress = UserAddress::where('user_id',$user->id)
+                                ->join('users','users.id', '=', 'user_addresses.user_id')
+                                ->join('country','country.id_country', '=', 'user_addresses.country_id')
+                                ->join('states','states.id', '=', 'user_addresses.state_id')
+                                ->join('city','city.id', '=', 'user_addresses.city_id')
+                                ->join('locality','locality.id', '=', 'user_addresses.locality_id')
+                                ->select('users.first_name',
+                                        'user_addresses.address',
+                                        'user_addresses.contact_no',
+                                        'country.country_name',
+                                        'states.states as state_name',
+                                        'city.name as city_name',
+                                        'locality.name as locality_name',
+                                        'user_addresses.pincode')
+                                ->get();  
                 $this->data = $userAddress;
                 $this->status   = "true";
                 $this->message  = 'messages.data_get';
+            }else{
+                $this->message  = 'Token Expired Or Invalid';
+            }
+        }
+        return $this->response();
+    }
+
+    public function changePassword(Request $request){
+            
+        $credentials = $request->only('old_password','new_password','confirm_password');
+        $rules = [
+            'old_password' => 'required',
+            'new_password' => 'required',
+            'confirm_password' => 'required'
+        ];
+        $validator = Validator::make($credentials, $rules);
+        
+        if($validator->fails()) {
+            $this->message    = $validator->messages()->first();
+        }
+        else{
+            $user = $this->getAuthUser($request->token);   
+            if($user){
+                User::change($user->id,[
+                    'password'      => Hash::make($request->new_password),
+                    'updated_at'    => date('Y-m-d H:i:s')
+                ]);
+                $this->status   = true;
+                $this->message  = 'messages.password_changed_successfully';
             }else{
                 $this->message  = 'Token Expired Or Invalid';
             }

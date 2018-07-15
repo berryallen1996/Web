@@ -15,14 +15,11 @@
 	Route::post('login', 'Api\AuthController@login');
 	Route::post('forgot', 'Api\AuthController@forgot');
 	Route::post('verify', 'Api\AuthController@verifyUser');
-	Route::post('dropdown', 'Api\AuthController@dropdown');
+	Route::post('resend_otp', 'Api\AuthController@resend_otp');
 
 	Route::post('send', 'Api\AuthController@send');
 	Route::group(['middleware' => 'jwt.auth'], function () {
 	    Route::get('logout', 'Api\AuthController@logout');
 	    Route::post('addAddress', 'Api\AuthController@addAddress');
 	    Route::post('addressList', 'Api\AuthController@addressList');
-	    Route::get('test', function(){
-	        return response()->json(['foo'=>'bar']);
-	    });
 	});
