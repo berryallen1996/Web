@@ -536,11 +536,11 @@ class AuthController extends Controller
                                 'locality.name as locality_name',
                                 'restaurant.pincode',
                                 DB::raw("ifnull(restaurant.image,'') as image"))
-                        ->where('state_id',$state_id)
-                        ->where('city_id',$city_id)
-                        ->where('locality_id',$locality_id)
-                        ->where('pincode',$pincode)
-                        ->where('address',$address)
+                        ->where('restaurant.state_id',$state_id)
+                        ->where('restaurant.city_id',$city_id)
+                        ->where('restaurant.locality_id',$locality_id)
+                        ->where('restaurant.pincode',$pincode)
+                        // ->where('address',$address)
                         ->get();
         $this->data = $data;
         $this->status   = "true";
