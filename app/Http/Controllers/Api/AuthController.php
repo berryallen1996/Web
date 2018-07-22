@@ -590,24 +590,18 @@ class AuthController extends Controller
         
         $builder = Dish::join('dish_restaurant','dish_restaurant.dish_id', '=', 'dishes.id')
                         ->join('restaurant','restaurant.id', '=', 'dish_restaurant.restaurant_id')
-                        ->leftjoin('dishes_category','dishes_category.id', '=', 'dishes.category_id')
+                        ->join('dishes_category','dishes_category.id', '=', 'dishes.category_id')
                         ->select('dishes.id',
                                 'dishes.name as dish_name',
+                                'dishes_category.id as category_id',
                                 'dishes.price as dish_price',
                                 'dishes_category.name as dishes_category_name',
                                 DB::raw("ifnull(dishes.image,'') as image"))
                         ->where('restaurant.id',$restaurant_id)
-                        ->with('dishQuantity');
-                        
-        if($name != ''){
-            $builder = $builder->where('dishes.name','like', '%' . $name . '%');
-        }
-        if($category_id != ''){
-            $builder = $builder->where('dishes.category_id',$category_id);
-        }
-        
+                        ->with('dishQuantity')->get();
 
-        $data = $builder->paginate(10);
+        
+        $data = $builder->groupBy('dishes_category_name');
         $this->data = $data;
         $this->status   = "true";
         $this->message  = 'messages.data_get';
