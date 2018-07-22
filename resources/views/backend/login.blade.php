@@ -35,7 +35,7 @@
     @section('content')
         <div class="login-box">
             <div class="login-logo">
-                <a href="{{url('/administrator/login')}}">Berry Allen</a>
+                <a href="{{url('/administrator/login')}}"><img src="{{ asset('images/logo.jpg') }}"></a>
             </div>
             <div class="login-box-body">
                     @if(Session::has('success'))

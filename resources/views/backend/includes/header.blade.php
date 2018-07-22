@@ -3,9 +3,9 @@
     <a href="javascript:;" style="cursor:default;" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
         
-            <span class="logo-mini"><img src="{{ asset('/backend/dist/img/logo.png') }}" /></span> 
+            <span class="logo-mini"><img src="{{ asset('/images/logo.jpg') }}" /></span> 
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><img src="{{ asset('/backend/dist/img/logo.png') }}" /></span> 
+            <span class="logo-lg"><img src="{{ asset('/images/logo.jpg') }}" /></span> 
         
     </a>
     <!-- Header Navbar: style can be found in header.less -->
