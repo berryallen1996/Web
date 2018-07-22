@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDishesQuantityTable extends Migration
+class CreateYearOrderIdTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateDishesQuantityTable extends Migration
      */
     public function up()
     {
-        Schema::create('plates', function (Blueprint $table) {
+        Schema::create('year_order_id', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('year_order_id');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ class CreateDishesQuantityTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('plates');
+        Schema::dropIfExists('year_order_id');
     }
 }

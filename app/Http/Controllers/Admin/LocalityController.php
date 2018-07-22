@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Datatables;
-use App\Models\Quantity;
+use App\Models\Plate;
 use App\Models\Locality;
 use App\Models\Country;
 use App\Models\State;

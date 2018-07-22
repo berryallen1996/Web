@@ -5,10 +5,9 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
-
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Datatables;
-use App\Models\Quantity;
+use App\Models\Plate;
 
 class QuantityController extends Controller
 {
@@ -19,10 +18,10 @@ class QuantityController extends Controller
      */
     public function index(Request $request)
     {
-        $data['page_title'] = $data['title'] = 'Quantity';
+        $data['page_title'] = $data['title'] = 'Plate';
         if ($request->ajax()){
 
-            $quantity = Quantity::all(['id','name','created_at']);
+            $quantity = Plate::all(['id','name','created_at']);
             
             if($quantity->isEmpty()){
                 return Datatables::of($quantity)->make(true);   
@@ -45,7 +44,7 @@ class QuantityController extends Controller
      */
     public function create()
     {
-        $data['page_title'] = $data['title'] = 'Add Quantity';
+        $data['page_title'] = $data['title'] = 'Add Plate';
         return view('backend.quantity.add')->with($data);
     }
 
@@ -58,22 +57,22 @@ class QuantityController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-                'name' => 'required|max:50|unique:dishes_quantity',
+                'name' => 'required|max:50|unique:plates',
                 ],
                 [
-                    'name.required' => 'Please enter Quantity.',
-                    'name.unique'   => 'Quantity Already Exists.Please try another.'
+                    'name.required' => 'Please enter Plate.',
+                    'name.unique'   => 'Plate Already Exists.Please try another.'
                 ]
         );
         
-        Quantity::insert(
+        Plate::insert(
             [
                 'name' => $request->name,
                 'created_at' => date('Y-m-d H:i:s')
             ]
         );
 
-        $request->session()->flash('success', 'Quantity saved successfully.');
+        $request->session()->flash('success', 'Plate saved successfully.');
         return redirect('admin/quantity');
     }
 
@@ -96,9 +95,9 @@ class QuantityController extends Controller
      */
     public function edit($id)
     {
-        $data['page_title'] = $data['title']= 'Edit Quantity';
+        $data['page_title'] = $data['title']= 'Edit Plate';
         
-        $data['quantity'] = Quantity::select(['id','name'])->where(['id'=>$id])->first();
+        $data['quantity'] = Plate::select(['id','name'])->where(['id'=>$id])->first();
         
         return view('backend.quantity.edit')->with($data);
     }
@@ -113,21 +112,21 @@ class QuantityController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-                'name' => 'required|max:50|unique:dishes_quantity,name,'.$id.'',
+                'name' => 'required|max:50|unique:plates,name,'.$id.'',
                 ],
                 [
                     'name.required' => 'Please enter Country.',
-                    'name.unique'   => 'Quantity Already Exists.Please try another.'
+                    'name.unique'   => 'Plate Already Exists.Please try another.'
                 ]
         );
 
-        Quantity::where('id', $id)
+        Plate::where('id', $id)
             ->update([
                         'name'       => $request->name,
                     ]
         );
 
-        $request->session()->flash('success', 'Quantity updated successfully.');
+        $request->session()->flash('success', 'Plate updated successfully.');
         return redirect('admin/quantity');
     }
 
@@ -139,7 +138,7 @@ class QuantityController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        Quantity::where('id', $id)->delete();
-        $request->session()->flash('success', 'Quantity deleted successfully.');
+        Plate::where('id', $id)->delete();
+        $request->session()->flash('success', 'Plate deleted successfully.');
     }
 }

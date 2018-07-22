@@ -26,4 +26,8 @@
 	    Route::get('logout', 'Api\AuthController@logout');
 	    Route::post('addAddress', 'Api\AuthController@addAddress');
 	    Route::post('addressList', 'Api\AuthController@addressList');
+	    Route::post('add_to_cart', 'Api\AuthController@addToCart');
+	    Route::post('cart_list', 'Api\AuthController@cartList');
+	    Route::post('remove_from_cart', 'Api\AuthController@removeFromCart');
+	    Route::post('place_order', 'Api\AuthController@placeOrder');
 	});

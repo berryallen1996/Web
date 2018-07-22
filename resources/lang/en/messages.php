@@ -31,5 +31,12 @@ return [
 	'data_get'									=> 'Data found.',
 	'address_saved'								=> 'Address saved successfully.',
 	'email_sending_failed'						=> 'Email sending failed.',
+	'add_to_cart'								=> 'Item added to cart.',
+	'remove_from_cart'							=> 'Item removed from cart successfully.',
+	'item_not_found'							=> 'Item not found.',
+	'already_in_cart'							=> 'Already in cart, Item quantity has been updated successfully.',
+	'token_invalid'								=> 'Token Expired Or Invalid.',
+	'cart_empty'								=> 'No any item in cart.',
+	'placed_sucess'								=> 'Order has been placed successfully.',
 
 ];

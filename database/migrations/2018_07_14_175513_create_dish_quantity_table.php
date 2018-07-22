@@ -16,8 +16,8 @@ class CreateDishQuantityTable extends Migration
         Schema::create('dish_quantity', function (Blueprint $table) {
             $table->integer('dish_id')->unsigned();
             $table->foreign('dish_id')->references('id')->on('dishes')->onDelete('cascade');
-            $table->integer('quantity_id')->unsigned();
-            $table->foreign('quantity_id')->references('id')->on('dishes_quantity')->onDelete('cascade');
+            $table->integer('plate_id')->unsigned();
+            $table->foreign('plate_id')->references('id')->on('plates')->onDelete('cascade');
         });
     }
 
