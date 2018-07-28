@@ -72,7 +72,6 @@
         <script src="{{ asset ("/backend/plugins/datatables/jquery.dataTables.min.js") }}"></script>
         <script src="{{ asset ("/backend/plugins/datatables/dataTables.bootstrap.min.js") }}"></script>
         <script src="{{ asset ("/backend/dist/js/app.min.js") }}" type="text/javascript"></script>
-        <script src="{{ asset ("/script/common.js") }}" type="text/javascript"></script>
         <script src="{{ asset('/bower_components/sweetalert2/dist/sweetalert2.min.js') }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
         <script src="{{ asset ('/js/api.js') }}" type="text/javascript"></script>

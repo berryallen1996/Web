@@ -32,6 +32,10 @@ Route::group(['middleware' => '\App\Http\Middleware\AdminAuth'], function () {
 
 			Route::resource('static','StaticContentController');
 
+			Route::resource('user','UserController');
+
+			Route::resource('restaurant','RestaurantController');
+
 			Route::get('dashboard','AdminController@dashboard');
 			Route::get('logout', function () {
 		        \Auth::logout();
