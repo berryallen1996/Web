@@ -39,6 +39,9 @@ Route::group(['middleware' => '\App\Http\Middleware\AdminAuth'], function () {
 			Route::resource('restaurant','RestaurantController');
 
 			Route::get('dashboard','AdminController@dashboard');
+
+			Route::get('restaurant/{id}/dishes','RestaurantController@dishList');
+
 			Route::get('logout', function () {
 		        \Auth::logout();
 				return redirect('/administrator/login');

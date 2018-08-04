@@ -203,4 +203,28 @@ class RestaurantController extends Controller
         $request->session()->flash('success', 'Restaurant deleted successfully.');
         return redirect('admin/restaurant');
     }
+
+
+
+    public function dishList(Request $request,$id){
+        $data['page_title'] = $data['title'] = 'Dishes Management';
+        if ($request->ajax()){
+
+            $dishes = Dish::all(['id','name','category_id','price','image']);
+            
+            if($dishes->isEmpty()){
+                return Datatables::of($dishes)->make(true);   
+            }else{  
+                $data['dishes'] = array();
+                foreach ($dishes as $key => $value) {
+                    $data['dishes'][$key]['dishes_id'] = ($value->id);
+                    $data['dishes'][$key]['name'] = ($value->name);
+                    $data['dishes'][$key]['address'] = ($value->address);
+                    $data['dishes'][$key]['contact_no'] = ($value->contact_no);
+                }
+                return Datatables::of($data['dishes'])->make(true); 
+            }  
+        }
+        return view('backend.dishes.list')->with($data);
+    }
 }

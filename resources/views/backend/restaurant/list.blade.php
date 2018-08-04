@@ -102,7 +102,7 @@
                    "targets": 4,
                    "data": null,
                    "render": function (data) {
-                      var link = '<a href="restaurant/'+data['restaurant_id']+'/edit" class="badge bg-light-blue" title="Edit">Edit</a><a href="javascript:void(0);" data-url="restaurant/'+data['restaurant_id']+'" data-request="status" data-ask="Do you really want to continue with this action?" class="badge bg-red" title="Delete">Delete</a>';
+                      var link = '<a href="restaurant/'+data['restaurant_id']+'/dishes" class="badge bg-light-blue" title="Dishes">Dishes</a><a href="restaurant/'+data['restaurant_id']+'/edit" class="badge bg-light-blue" title="Edit">Edit</a><a href="javascript:void(0);" data-url="restaurant/'+data['restaurant_id']+'" data-request="status" data-ask="Do you really want to continue with this action?" class="badge bg-red" title="Delete">Delete</a>';
                       return link;
                     }
                }
