@@ -1,0 +1,4 @@
+[04-Aug-2018 10:51:02 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/indiankitchens/public_html/config/hashing.php:32
+Stack trace:
+#0 {main}
+  thrown in /home/indiankitchens/public_html/config/hashing.php on line 32
