@@ -19,6 +19,8 @@ Route::get('administrator/login','Admin\AdminController@login');
 Route::post('/administrator/login','Admin\AdminController@authenticate');
 Route::get('get-state-list','Admin\AdminController@getStateList');
 Route::get('get-city-list','Admin\AdminController@getCityList');
+Route::get('get-locality-list','Admin\AdminController@getLocalityList');
+Route::post('/crop', 'Common\CropController@cropper');
 
 
 Route::group(['middleware' => '\App\Http\Middleware\AdminAuth'], function () {

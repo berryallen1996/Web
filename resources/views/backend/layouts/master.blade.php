@@ -24,7 +24,9 @@
         <link href="{{ asset("/backend/dist/css/custom.css")}}" rel="stylesheet" type="text/css" />
         <link href="{{ asset("/backend/dist/css/custom-responsive.css")}}" rel="stylesheet" type="text/css" />
         <link href="{{ asset("/css/bootstrap-datetimepicker.min.css")}}" rel="stylesheet" type="text/css" />
-          <link href="{{ asset("/backend/jquery.datetimepicker.css")}}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset("/backend/jquery.datetimepicker.css")}}" rel="stylesheet" type="text/css" />
+
+        <link href="{{asset('css/cropper.min.css')}}" rel="stylesheet">
 
         @yield('requirecss')
         @yield('inlinecss')
@@ -75,6 +77,8 @@
         <script src="{{ asset('/bower_components/sweetalert2/dist/sweetalert2.min.js') }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
         <script src="{{ asset ('/js/api.js') }}" type="text/javascript"></script>
+        <script src="{{ asset ('/js/main.js') }}" type="text/javascript"></script>
+        <script src="{{asset('js/cropper.min.js')}}"></script>
         <script type="text/javascript">$(function () { $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}});});</script>
         <!-- Custom JS -->
         <script src="{{ asset ("/backend/dist/js/custom.js") }}" type="text/javascript"></script>
@@ -92,5 +96,61 @@
             </div>
             <div class="popup_align"></div>
         </div>
+
+
+@if(\Request::is('admin/restaurant/*'))
+        <div id="formCropper">
+              <div class="modal fade" id="avatar-modal" aria-hidden="true" aria-labelledby="avatar-modal-label" role="dialog" tabindex="-1">
+                <div class="modal-dialog modal-lg crop-dialog">
+                  <div class="modal-content">
+                    <form class="avatar-form" action="{{ url('crop') }}" enctype="multipart/form-data" method="post">
+                      <div>
+                        <div class="modal-header">
+                          <button class="close" data-dismiss="modal" type="button">&times;</button>
+                          <h4 class="modal-title" id="avatar-modal-label">Crop</h4>
+                        </div>
+                        <div class="modal-body">
+                          <div class="avatar-body"> 
+                            <!-- Upload image and data -->
+                            <div class="form-group row">
+                              <div class="col-md-12">
+                                <div class="avatar-upload"> <span class="upload-file company_logo-upload">
+                                  <!-- <input id="uploadFile" class="form-control" placeholder="Choose File" disabled="disabled" /> -->
+                                  <div class="fileUpload"> <span>Browse</span>
+                                    <input class="avatar-input upload" id="avatarInput" accept='image/jpeg,image/jpg,image/gif,image/png' name="avatar_file" type="file" />
+                                  </div>
+                                  </span>
+                                  <input class="avatar-src" name="avatar_src" type="hidden" />
+                                  <input class="avatar-data" name="avatar_data" type="hidden" />
+                                  <input type="hidden" id="image_width" name="image_width" value="<?php echo $image_width ? $image_width : '' ?>" />
+                                  <input type="hidden" id="image_height" name="image_height" value="<?php echo $image_height ? $image_height : '' ?>" />
+                                  <input type="hidden" id="upload_folder" name="upload_folder" value="<?php echo $uploads ? $uploads : '' ?>" />
+                                  <input type="hidden" id="type" name="type" value="<?php echo $type ? $type : '' ?>" />
+                                  <input type="hidden" id="file_path" name="file_path" value="<?php echo $file_path ? $file_path : '' ?>" />
+                                  <input type="hidden" id="div" name="div" value="pre_image" />
+                                </div>
+                              </div>  
+                            </div>
+                            <!-- Crop and preview -->
+                            <div class="form-group row">
+                              <div class="col-md-12">
+                                <div class="avatar-wrapper"></div>
+                              </div>
+                            </div>
+                            <div class="row avatar-btns">
+                              <div class="col-md-12">
+                                <button class="btn btn-primary avatar-save" type="submit">Submit</button>
+                                <img src="{{ asset('images/loader.gif') }}" class="hide-loader">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            @endif
     </body>
 </html>

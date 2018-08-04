@@ -85,4 +85,12 @@ class AdminController extends Controller
                     ->pluck("name","id");
         return response()->json($cities);
     }
+
+    public function getLocalityList(Request $request)
+    {
+        $locality = \DB::table("locality")
+                    ->where("city_id",$request->city_id)
+                    ->pluck("name","id");
+        return response()->json($locality);
+    }
 }

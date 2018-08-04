@@ -12,6 +12,38 @@ body {
     padding: 0;
     overflow-x: hidden;
 }
+.custom-image {
+    max-width: 60%;
+    display: block;
+}
+
+.crop-customUpload {
+   position: relative;
+   display: block;
+}
+.crop-customUpload .form-control[disabled], 
+.crop-customUpload fieldset[disabled] .form-control {
+    cursor: not-allowed;
+    background: transparent;
+    height: 100%;
+    border: 0;
+}
+
+.crop-customUpload .fileUpload {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    border: 1px solid #d2d6de;
+}
+
+.crop-customUpload .avatar-view {
+    display: block;
+    height: 100%;
+    cursor: pointer;
+}
 
 .wrapper {
     max-width: 1900px;

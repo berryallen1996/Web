@@ -77,7 +77,7 @@
                },
               { data: 'name', name: 'name' },
               { data: 'address', name: 'address' },
-              { data: 'contact', name: 'contact' },
+              { data: 'contact_no', name: 'contact_no' },
               { 
                    "className": 'action', 
                    "orderable": false, 
@@ -102,7 +102,7 @@
                    "targets": 4,
                    "data": null,
                    "render": function (data) {
-                      var link = '<a href="user/'+data['user_id']+'/edit" class="badge bg-light-blue" title="Edit">Edit</a><a href="javascript:void(0);" data-url="user/'+data['user_id']+'" data-request="status" data-ask="Do you really want to continue with this action?" class="badge bg-red" title="Delete">Delete</a>';
+                      var link = '<a href="restaurant/'+data['restaurant_id']+'/edit" class="badge bg-light-blue" title="Edit">Edit</a><a href="javascript:void(0);" data-url="restaurant/'+data['restaurant_id']+'" data-request="status" data-ask="Do you really want to continue with this action?" class="badge bg-red" title="Delete">Delete</a>';
                       return link;
                     }
                }

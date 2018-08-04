@@ -168,6 +168,8 @@ class LocalityController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Locality::where('id', $id)->delete();
+        $request->session()->flash('success', 'Locality deleted successfully.');
+        return redirect('admin/locality');
     }
 }
