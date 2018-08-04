@@ -38,5 +38,6 @@ return [
 	'token_invalid'								=> 'Token Expired Or Invalid.',
 	'cart_empty'								=> 'No any item in cart.',
 	'placed_sucess'								=> 'Order has been placed successfully.',
+	'valid_plate_id'							=> 'Please enter valid plate.',
 
 ];
