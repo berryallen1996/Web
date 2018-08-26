@@ -17,7 +17,7 @@
                   <input type="hidden" name="restaurant_id" id="restaurant_id" value="{{$restaurant_id}}">
                   <h3 class="box-title">Dishes List</h3>
                   <h6>Restaurant Name - {{$restaurant_name['name']}}</h6>
-                  <a href="{{ url('admin/dishes/create/') }}" class="btn btn-default pull-right">Add Dish</a>
+                  <a href="{{ url('admin/dishes/create/'.$restaurant_id) }}" class="btn btn-default pull-right">Add Dish</a>
                 </div>           
                 <div class="panel-body">
                     @if(Session::has('success'))
